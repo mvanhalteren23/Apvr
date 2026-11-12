@@ -1,0 +1,42 @@
+{
+  "name": "apvr",
+  "version": "0.4.0",
+  "private": true,
+  "description": "AetherPlanes VR (apvr) - Multiplayer 3D WebXR TCG for Pico G2 Firefox Reality (3DoF) & Vercel",
+  "browserslist": [
+    "firefox >= 77",
+    "and_ff >= 77",
+    "chrome >= 80"
+  ],
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@react-three/drei": "^9.114.0",
+    "@react-three/fiber": "^8.17.10",
+    "@react-three/xr": "^6.2.3",
+    "gsap": "^3.12.5",
+    "next": "14.2.15",
+    "playroomkit": "^0.0.84",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "simple-peer": "^9.11.1",
+    "three": "^0.169.0",
+    "webxr-polyfill": "^2.0.3",
+    "zustand": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.16.10",
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.1",
+    "@types/simple-peer": "^9.11.8",
+    "@types/three": "^0.169.0",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.13",
+    "typescript": "^5.6.3"
+  }
+}
