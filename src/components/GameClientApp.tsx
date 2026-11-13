@@ -161,6 +161,7 @@ export const GameClientApp: React.FC<GameClientAppProps> = ({
       source.connect(analyser);
 
       const dataArray = new Uint8Array(analyser.frequencyBinCount);
+      let lastReportedMicLevel = -1;
       const updateMeter = () => {
         analyser.getByteFrequencyData(dataArray);
         let sum = 0;
@@ -168,7 +169,10 @@ export const GameClientApp: React.FC<GameClientAppProps> = ({
           sum += dataArray[i];
         }
         const normalized = Math.min(100, Math.round((sum / dataArray.length / 110) * 100));
-        setLocalMicLevel(normalized);
+        if (Math.abs(normalized - lastReportedMicLevel) >= 3) {
+          lastReportedMicLevel = normalized;
+          setLocalMicLevel(normalized);
+        }
         micRafRef.current = requestAnimationFrame(updateMeter);
       };
       updateMeter();

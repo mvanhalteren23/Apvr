@@ -77,18 +77,31 @@ export function computeHandOriginWorldCoords(
   return [0, 1.3, 2.7 * oppSign];
 }
 
-// Synthesize procedural Web Audio API spatial combat impact sound
-export function playProceduralCombatSound(
-  type: 'CLASH' | 'AVATAR_HIT' | 'SHATTER' | 'SUMMON'
-): void {
-  if (typeof window === 'undefined') return;
-  try {
+let sharedCombatAudioCtx: AudioContext | null = null;
+
+function getSharedCombatAudioContext(): AudioContext | null {
+  if (typeof window === 'undefined') return null;
+  if (!sharedCombatAudioCtx || sharedCombatAudioCtx.state === 'closed') {
     const AudioCtx =
       window.AudioContext ||
       (window as unknown as { webkitAudioContext: typeof AudioContext })
         .webkitAudioContext;
-    if (!AudioCtx) return;
-    const ctx = new AudioCtx();
+    if (!AudioCtx) return null;
+    sharedCombatAudioCtx = new AudioCtx();
+  }
+  if (sharedCombatAudioCtx.state === 'suspended') {
+    sharedCombatAudioCtx.resume().catch(() => undefined);
+  }
+  return sharedCombatAudioCtx;
+}
+
+// Synthesize procedural Web Audio API spatial combat impact sound
+export function playProceduralCombatSound(
+  type: 'CLASH' | 'AVATAR_HIT' | 'SHATTER' | 'SUMMON'
+): void {
+  const ctx = getSharedCombatAudioContext();
+  if (!ctx) return;
+  try {
     const now = ctx.currentTime;
 
     const osc = ctx.createOscillator();
@@ -135,10 +148,6 @@ export function playProceduralCombatSound(
       osc.start(now);
       osc.stop(now + 0.34);
     }
-
-    setTimeout(() => {
-      ctx.close().catch(() => undefined);
-    }, 600);
   } catch {
     // Ignore if audio context is blocked prior to user gesture
   }

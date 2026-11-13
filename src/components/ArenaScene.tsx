@@ -120,11 +120,8 @@ const ArenaInterior: React.FC = () => {
       <directionalLight position={[0, 6, 2]} intensity={0.95} color="#38bdf8" />
       <directionalLight position={[0, 4, -3]} intensity={0.68} color="#f5b041" />
 
-      {/* Low-Poly Sanctum Sky Dome & Astral Horizon Ring */}
-      <mesh>
-        <sphereGeometry args={[18, 16, 12]} />
-        <meshBasicMaterial color="#060913" side={THREE.BackSide} />
-      </mesh>
+      {/* Zero-Overdraw Sanctum Clear Color & Astral Horizon Ring */}
+      <color attach="background" args={['#060913']} />
 
       <mesh position={[0, 0.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <ringGeometry args={[4.5, 11.5, 24]} />

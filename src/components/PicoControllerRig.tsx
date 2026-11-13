@@ -21,7 +21,6 @@ export const PicoControllerRig: React.FC<PicoControllerRigProps> = ({
   const localSeat = useGameStore((s) => s.localSeat);
   const priorityPlayer = useGameStore((s) => s.priorityPlayer);
   const winner = useGameStore((s) => s.winner);
-  const hoveredObjectId = useGameStore((s) => s.hoveredObjectId);
   const setHoveredObjectId = useGameStore((s) => s.setHoveredObjectId);
   const interactWithCard = useGameStore((s) => s.interactWithCard);
   const interactWithSlot = useGameStore((s) => s.interactWithSlot);
@@ -50,7 +49,10 @@ export const PicoControllerRig: React.FC<PicoControllerRigProps> = ({
   const rayDirectionWorld = useRef(new THREE.Vector3(0, 0, -1));
   const tempQuat = useRef(new THREE.Quaternion());
   const tempMatrix = useRef(new THREE.Matrix4());
+  const tempTargetPoint = useRef(new THREE.Vector3());
+  const upVector = useRef(new THREE.Vector3(0, 1, 0));
   const hitTargetRef = useRef<THREE.Object3D | null>(null);
+  const lastHoverIdRef = useRef<string | null>(null);
   const touchpadPressedLastFrame = useRef<boolean>(false);
 
   useEffect(() => {
@@ -140,7 +142,7 @@ export const PicoControllerRig: React.FC<PicoControllerRigProps> = ({
       }
       window.removeEventListener('keydown', handleKeyDown);
     };
-  });
+  }, [gl, localSeat, priorityPlayer, winner, advancePhase]);
 
   useFrame((state) => {
     const wand = wandGroupRef.current;
@@ -186,14 +188,14 @@ export const PicoControllerRig: React.FC<PicoControllerRigProps> = ({
       state.camera.lookAt(0, 0.8, 0);
 
       raycasterRef.current.setFromCamera(pointer, state.camera);
-      const targetPoint = new THREE.Vector3()
+      const targetPoint = tempTargetPoint.current
         .copy(raycasterRef.current.ray.origin)
         .addScaledVector(raycasterRef.current.ray.direction, 3.8);
 
       tempMatrix.current.lookAt(
         wand.position,
         targetPoint,
-        new THREE.Vector3(0, 1, 0)
+        upVector.current
       );
       wand.quaternion.setFromRotationMatrix(tempMatrix.current);
     }
@@ -239,7 +241,8 @@ export const PicoControllerRig: React.FC<PicoControllerRigProps> = ({
 
     hitTargetRef.current = foundInteractive;
 
-    if (isPresentingVR && foundHoverId !== hoveredObjectId) {
+    if (isPresentingVR && foundHoverId !== lastHoverIdRef.current) {
+      lastHoverIdRef.current = foundHoverId;
       setHoveredObjectId(foundHoverId);
     }
 

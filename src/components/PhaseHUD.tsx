@@ -30,7 +30,6 @@ export const PhaseHUD: React.FC = () => {
   const players = useGameStore((s) => s.players);
   const combatLog = useGameStore((s) => s.combatLog);
   const winner = useGameStore((s) => s.winner);
-  const hoveredObjectId = useGameStore((s) => s.hoveredObjectId);
   const remotePeerConnected = useGameStore((s) => s.remotePeerConnected);
 
   const setHoveredObjectId = useGameStore((s) => s.setHoveredObjectId);
@@ -45,8 +44,12 @@ export const PhaseHUD: React.FC = () => {
   const opponentPlayer = players[opponentSeat];
 
   const hasLocalPriority = priorityPlayer === localSeat;
-  const isPhaseCrystalHovered = hoveredObjectId === 'phase-crystal-orb';
-  const isSpawnAiHovered = hoveredObjectId === 'spawn-ai-opponent-btn';
+  const isPhaseCrystalHovered = useGameStore(
+    (s) => s.hoveredObjectId === 'phase-crystal-orb'
+  );
+  const isSpawnAiHovered = useGameStore(
+    (s) => s.hoveredObjectId === 'spawn-ai-opponent-btn'
+  );
 
   // Determine 3D button label based on the 4-Step Turn Structure
   let actionButtonText = 'ENTER ATTACK PHASE';
@@ -196,7 +199,7 @@ export const PhaseHUD: React.FC = () => {
           }}
           onPointerOut={(e) => {
             e.stopPropagation();
-            if (hoveredObjectId === 'phase-crystal-orb') {
+            if (useGameStore.getState().hoveredObjectId === 'phase-crystal-orb') {
               setHoveredObjectId(null);
             }
           }}
@@ -356,7 +359,10 @@ export const PhaseHUD: React.FC = () => {
             }}
             onPointerOut={(e) => {
               e.stopPropagation();
-              if (hoveredObjectId === 'spawn-ai-opponent-btn') {
+              if (
+                useGameStore.getState().hoveredObjectId ===
+                'spawn-ai-opponent-btn'
+              ) {
                 setHoveredObjectId(null);
               }
             }}

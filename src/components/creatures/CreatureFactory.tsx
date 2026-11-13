@@ -343,7 +343,6 @@ export const CreatureFactory: React.FC<CreatureFactoryProps> = ({
   const portalRingRef = useRef<THREE.Mesh>(null);
   const interactWithCard = useGameStore((s) => s.interactWithCard);
   const setHoveredObjectId = useGameStore((s) => s.setHoveredObjectId);
-  const hoveredObjectId = useGameStore((s) => s.hoveredObjectId);
 
   // Orient 3D creature toward the opposing side of the table:
   // P1 creatures at +Z face -Z (rotation.y = 0); P2 creatures at -Z face +Z (rotation.y = Math.PI)
@@ -415,7 +414,7 @@ export const CreatureFactory: React.FC<CreatureFactoryProps> = ({
       }}
       onPointerOut={(e) => {
         e.stopPropagation();
-        if (hoveredObjectId === card.id) {
+        if (useGameStore.getState().hoveredObjectId === card.id) {
           setHoveredObjectId(null);
         }
       }}
