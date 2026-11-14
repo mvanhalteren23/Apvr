@@ -8,6 +8,7 @@ import {
   GameMode,
   ManaColor,
   ManaPoolByColor,
+  MobileCameraPreset,
   PlayerSeat,
   SynchronizedMatchState,
   TurnPhase,
@@ -423,6 +424,8 @@ export interface GameStore extends SynchronizedMatchState {
   isLobbyEntered: boolean;
   isPlayroomConnected: boolean;
   hoveredObjectId: string | null;
+  cameraPreset: MobileCameraPreset;
+  isMicMuted: boolean;
   localMicStream: MediaStream | null;
   localMicLevel: number;
   remoteVoiceLevel: number;
@@ -431,6 +434,8 @@ export interface GameStore extends SynchronizedMatchState {
   setLocalSeat: (seat: PlayerSeat) => void;
   setRoomCode: (code: string) => void;
   setGameMode: (mode: GameMode) => void;
+  setCameraPreset: (preset: MobileCameraPreset) => void;
+  toggleMicMute: () => void;
   spawnAIOpponent: () => void;
   setLobbyEntered: (entered: boolean) => void;
   setPlayroomConnected: (connected: boolean) => void;
@@ -439,6 +444,7 @@ export interface GameStore extends SynchronizedMatchState {
   setLocalMicLevel: (level: number) => void;
   setRemoteVoiceLevel: (level: number) => void;
   setRemotePeerConnected: (connected: boolean) => void;
+  clearSelection: () => void;
 
   applyRemoteState: (snapshot: SynchronizedMatchState) => void;
   getSerializableState: () => SynchronizedMatchState;
@@ -535,6 +541,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
   isLobbyEntered: false,
   isPlayroomConnected: false,
   hoveredObjectId: null,
+  cameraPreset: 'DUEL',
+  isMicMuted: false,
   localMicStream: null,
   localMicLevel: 0,
   remoteVoiceLevel: 0,
@@ -542,6 +550,19 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   setLocalSeat: (seat) => set({ localSeat: seat }),
   setRoomCode: (code) => set({ roomCode: code, matchId: code }),
+  setCameraPreset: (preset) => set({ cameraPreset: preset }),
+  clearSelection: () => set({ selectedCardId: null, selectedBlockerId: null }),
+
+  toggleMicMute: () =>
+    set((state) => {
+      const nextMuted = !state.isMicMuted;
+      if (state.localMicStream) {
+        state.localMicStream.getAudioTracks().forEach((track) => {
+          track.enabled = !nextMuted;
+        });
+      }
+      return { isMicMuted: nextMuted };
+    }),
 
   setGameMode: (mode) => {
     const fresh = createInitialMatchState(get().roomCode, mode);

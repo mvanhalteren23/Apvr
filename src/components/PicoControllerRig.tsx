@@ -168,7 +168,8 @@ export const PicoControllerRig: React.FC<PicoControllerRigProps> = ({
         wand.quaternion.copy(tempQuat.current);
       }
 
-      for (const source of session.inputSources) {
+      for (let i = 0; i < session.inputSources.length; i++) {
+        const source = session.inputSources[i];
         if (source.gamepad && source.gamepad.buttons.length > 1) {
           const touchpadBtn =
             source.gamepad.buttons[2] ?? source.gamepad.buttons[1];

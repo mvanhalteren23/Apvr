@@ -2,6 +2,8 @@ export type PlayerSeat = 'P1' | 'P2';
 
 export type GameMode = 'MULTIPLAYER' | 'SOLO_AI';
 
+export type MobileCameraPreset = 'DUEL' | 'TOP' | 'HAND';
+
 export type ManaColor = 'CRIMSON' | 'AETHER' | 'OBSIDIAN';
 
 export type CardType = 'LAND' | 'CREATURE' | 'SPELL';

@@ -103,7 +103,7 @@ export function initFirefoxPicoPolyfills(): void {
 
   // Bridge WebVR 1.1 -> WebXR on older Firefox Reality builds if navigator.xr is absent
   const nav = navigator as unknown as {
-    xr?: XRSystem;
+    xr?: unknown;
     getVRDisplays?: () => Promise<unknown[]>;
   };
 
@@ -142,7 +142,7 @@ export function detectPicoBrowserDiagnostics(): PicoBrowserDiagnostics {
 
   const ua = navigator.userAgent || '';
   const nav = navigator as unknown as {
-    xr?: XRSystem;
+    xr?: unknown;
     getVRDisplays?: () => Promise<unknown[]>;
   };
 
